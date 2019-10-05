@@ -68,13 +68,38 @@ weather_df %>%
   ggplot(aes(x = tmin, y = tmax)) + geom_point(aes(color = name), alpha = .4)
 ```
 
-this
+one summary line
 ```{r}
 weather_df %>%
   ggplot(aes(x = tmin, y = tmax)) + geom_point(aes(color = name), alpha = .4) + geom_smooth(se = FALSE)
 ```
-vs.
+vs. summary lines group specific 
 ```{r}
 weather_df %>%
   ggplot(aes(x = tmin, y = tmax, color = name)) + geom_point(alpha = .4) + geom_smooth(se = FALSE)
 ```
+
+three-panel plot: facet
+name = columns
+```{r}
+weather_df %>%
+  ggplot(aes(x = tmin, y = tmax, color = name)) + geom_point(alpha = .4) + geom_smooth(se = FALSE) + facet_grid(~name)
+```
+
+```{r}
+weather_df %>%
+  ggplot(aes(x = date, y = tmax, color = name)) + geom_point() + geom_smooth(se = FALSE)
+```
+  
+looking at precipitation:
+```{r}
+weather_df %>%
+  ggplot(aes(x = date, y = prcp, color = name)) + geom_point() + geom_smooth(se = FALSE)
+```
+```{r}
+weather_df %>%
+  ggplot(aes(x = date, y = tmax, color = name)) + geom_point(aes(size = prcp), alpha = .5) + geom_smooth(size = 2, se = FALSE)
+```  
+## Some extra stuff
+
+  

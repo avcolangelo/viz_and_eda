@@ -102,7 +102,7 @@ weather_df %>%
 
 ![](viz_i_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
-this
+one summary line
 
 ``` r
 weather_df %>%
@@ -115,7 +115,8 @@ weather_df %>%
 
     ## Warning: Removed 15 rows containing missing values (geom_point).
 
-![](viz_i_files/figure-gfm/unnamed-chunk-6-1.png)<!-- --> vs.
+![](viz_i_files/figure-gfm/unnamed-chunk-6-1.png)<!-- --> vs. summary
+lines group specific
 
 ``` r
 weather_df %>%
@@ -129,3 +130,60 @@ weather_df %>%
     ## Warning: Removed 15 rows containing missing values (geom_point).
 
 ![](viz_i_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+three-panel plot: facet name = columns
+
+``` r
+weather_df %>%
+  ggplot(aes(x = tmin, y = tmax, color = name)) + geom_point(alpha = .4) + geom_smooth(se = FALSE) + facet_grid(~name)
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+
+    ## Warning: Removed 15 rows containing non-finite values (stat_smooth).
+
+    ## Warning: Removed 15 rows containing missing values (geom_point).
+
+![](viz_i_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+``` r
+weather_df %>%
+  ggplot(aes(x = date, y = tmax, color = name)) + geom_point() + geom_smooth(se = FALSE)
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+
+    ## Warning: Removed 3 rows containing non-finite values (stat_smooth).
+
+    ## Warning: Removed 3 rows containing missing values (geom_point).
+
+![](viz_i_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+looking at precipitation:
+
+``` r
+weather_df %>%
+  ggplot(aes(x = date, y = prcp, color = name)) + geom_point() + geom_smooth(se = FALSE)
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+
+    ## Warning: Removed 3 rows containing non-finite values (stat_smooth).
+
+    ## Warning: Removed 3 rows containing missing values (geom_point).
+
+![](viz_i_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+``` r
+weather_df %>%
+  ggplot(aes(x = date, y = tmax, color = name)) + geom_point(aes(size = prcp), alpha = .5) + geom_smooth(size = 2, se = FALSE)
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+
+    ## Warning: Removed 3 rows containing non-finite values (stat_smooth).
+
+    ## Warning: Removed 3 rows containing missing values (geom_point).
+
+![](viz_i_files/figure-gfm/unnamed-chunk-11-1.png)<!-- --> \#\# Some
+extra stuff
