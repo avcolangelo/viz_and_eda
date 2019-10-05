@@ -102,4 +102,90 @@ weather_df %>%
 ```  
 ## Some extra stuff
 
-  
+only smooth curves: doesnt include all the data points
+```{r}
+weather_df %>%
+  ggplot(aes(x = date, y = tmax, color = name)) +   geom_smooth(size = 2, se = FALSE)
+```  
+
+2d density
+
+```{r}
+weather_df %>%
+  ggplot(aes(x = tmin, y = tmax)) + geom_hex()
+```
+
+## More kinds of plots!!
+Univariate
+
+```{r}
+weather_df %>%
+  ggplot(aes(x = tmax)) + 
+  geom_histogram()
+```
+
+```{r}
+weather_df %>%
+  ggplot(aes(x = tmax, fill = name)) + 
+  geom_histogram(position = "dodge")
+```
+
+```{r}
+weather_df %>%
+  ggplot(aes(x = tmax, fill = name)) + 
+  geom_histogram() + 
+  facet_grid(~name)
+```
+
+density plot
+```{r}
+weather_df %>%
+  ggplot(aes(x = tmax, fill = name)) + 
+  geom_density(alpha = .3)
+```
+
+```{r}
+weather_df %>%
+  ggplot(aes(x = name, y = tmax)) +
+  geom_boxplot()
+```
+
+violin plot
+```{r}
+weather_df %>%
+  ggplot(aes(x = name, y = tmax)) +
+  geom_violin()
+```
+
+ridge plots!
+```{r}
+weather_df %>%
+  ggplot(aes(x = tmax, y = name)) +
+  geom_density_ridges()
+```
+
+
+## saving a plot: reproducible export
+
+```{r}
+ggplot_ridge_temp = weather_df %>%
+  ggplot(aes(x = tmax, y = name)) +
+  geom_density_ridges()
+
+ggsave("gg_ridge_temp.pdf", ggplot_ridge_temp) 
+```
+
+embedding plots in rmarkdown
+```{r, fig.width = 6}
+weather_df %>%
+  ggplot(aes(x = tmin, y = tmax, color = name)) + geom_point(alpha = .4) + geom_smooth(se = FALSE)
+```
+
+```{r, fig.width = 12}
+weather_df %>%
+  ggplot(aes(x = tmin, y = tmax, color = name)) + geom_point(alpha = .4) + geom_smooth(se = FALSE)
+```
+
+
+
+
