@@ -77,3 +77,157 @@ weather_df %>%
     ## Warning: Removed 15 rows containing missing values (geom_point).
 
 ![](viz_ii.rmd_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+
+x axis tick marks etc
+
+``` r
+weather_df %>%
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .5) +
+  labs(
+    title = "Temperature plot",
+    x = "Minimum Temp (C)",
+    y = "Maximum Temp (C)",
+    caption = "Data from NOAA via rnoaa package"
+  ) +
+  scale_x_continuous(
+    breaks = c(-15, -5, 20),
+    labels = c("-15C", "-5C", "20C")
+  )
+```
+
+    ## Warning: Removed 15 rows containing missing values (geom_point).
+
+![](viz_ii.rmd_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+``` r
+weather_df %>%
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .5) +
+  labs(
+    title = "Temperature plot",
+    x = "Minimum Temp (C)",
+    y = "Maximum Temp (C)",
+    caption = "Data from NOAA via rnoaa package"
+  ) +
+  scale_x_continuous(
+    breaks = c(-15, -5, 20),
+    labels = c("-15C", "-5C", "20C") +
+      scale_y_continuous(
+        trans = "sqrt"
+      )
+  )
+```
+
+    ## Warning: Removed 15 rows containing missing values (geom_point).
+
+![](viz_ii.rmd_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+## colors
+
+``` r
+weather_df %>%
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .5) +
+  labs(
+    title = "Temperature plot",
+    x = "Minimum Temp (C)",
+    y = "Maximum Temp (C)",
+    caption = "Data from NOAA via rnoaa package"
+  ) +
+  scale_color_hue(
+    name = "Weather Station",
+    h = c(50, 250)
+  )
+```
+
+    ## Warning: Removed 15 rows containing missing values (geom_point).
+
+![](viz_ii.rmd_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+``` r
+ggp_base = 
+  weather_df %>%
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .5) +
+  labs(
+    title = "Temperature plot",
+    x = "Minimum Temp (C)",
+    y = "Maximum Temp (C)",
+    caption = "Data from NOAA via rnoaa package"
+  ) +
+  viridis::scale_color_viridis(
+    name = "Location",
+    discrete = TRUE
+  )
+```
+
+## themes
+
+``` r
+ggp_base +
+  theme(legend.position = "bottom")
+```
+
+    ## Warning: Removed 15 rows containing missing values (geom_point).
+
+![](viz_ii.rmd_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+``` r
+ggp_base +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+    ## Warning: Removed 15 rows containing missing values (geom_point).
+
+![](viz_ii.rmd_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+``` r
+ggp_base +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+    ## Warning: Removed 15 rows containing missing values (geom_point).
+
+![](viz_ii.rmd_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+``` r
+ggp_base +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+    ## Warning: Removed 15 rows containing missing values (geom_point).
+
+![](viz_ii.rmd_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+where does warning message: removed 15 rows containing missing values
+come from?
+
+``` r
+weather_df %>%
+  filter(is.na(tmin))
+```
+
+    ## # A tibble: 15 x 6
+    ##    name       id          date        prcp  tmax  tmin
+    ##    <chr>      <chr>       <date>     <dbl> <dbl> <dbl>
+    ##  1 Waikiki_HA USC00519397 2017-04-17     5  28.3    NA
+    ##  2 Waikiki_HA USC00519397 2017-05-09    NA  NA      NA
+    ##  3 Waikiki_HA USC00519397 2017-05-26    NA  NA      NA
+    ##  4 Waikiki_HA USC00519397 2017-07-19    NA  NA      NA
+    ##  5 Waikiki_HA USC00519397 2017-10-07     0  31.1    NA
+    ##  6 Waikiki_HA USC00519397 2017-10-09     0  28.9    NA
+    ##  7 Waikiki_HA USC00519397 2017-10-10    10  31.7    NA
+    ##  8 Waikiki_HA USC00519397 2017-10-12     0  31.1    NA
+    ##  9 Waikiki_HA USC00519397 2017-10-13     0  31.1    NA
+    ## 10 Waikiki_HA USC00519397 2017-10-16     5  30      NA
+    ## 11 Waikiki_HA USC00519397 2017-10-18     0  29.4    NA
+    ## 12 Waikiki_HA USC00519397 2017-10-20    13  30.6    NA
+    ## 13 Waikiki_HA USC00519397 2017-10-21     0  30      NA
+    ## 14 Waikiki_HA USC00519397 2017-10-22     0  30      NA
+    ## 15 Waikiki_HA USC00519397 2017-12-22     0  26.7    NA
+
+no tmin (x axis) values for 15 observations

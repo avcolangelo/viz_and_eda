@@ -53,3 +53,110 @@ weather_df %>%
   )
 ```
 
+x axis tick marks etc
+
+```{r}
+weather_df %>%
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .5) +
+  labs(
+    title = "Temperature plot",
+    x = "Minimum Temp (C)",
+    y = "Maximum Temp (C)",
+    caption = "Data from NOAA via rnoaa package"
+  ) +
+  scale_x_continuous(
+    breaks = c(-15, -5, 20),
+    labels = c("-15C", "-5C", "20C")
+  )
+```
+
+```{r}
+weather_df %>%
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .5) +
+  labs(
+    title = "Temperature plot",
+    x = "Minimum Temp (C)",
+    y = "Maximum Temp (C)",
+    caption = "Data from NOAA via rnoaa package"
+  ) +
+  scale_x_continuous(
+    breaks = c(-15, -5, 20),
+    labels = c("-15C", "-5C", "20C") +
+      scale_y_continuous(
+        trans = "sqrt"
+      )
+  )
+```
+
+## colors
+
+```{r}
+weather_df %>%
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .5) +
+  labs(
+    title = "Temperature plot",
+    x = "Minimum Temp (C)",
+    y = "Maximum Temp (C)",
+    caption = "Data from NOAA via rnoaa package"
+  ) +
+  scale_color_hue(
+    name = "Weather Station",
+    h = c(50, 250)
+  )
+```
+
+```{r}
+ggp_base = 
+  weather_df %>%
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .5) +
+  labs(
+    title = "Temperature plot",
+    x = "Minimum Temp (C)",
+    y = "Maximum Temp (C)",
+    caption = "Data from NOAA via rnoaa package"
+  ) +
+  viridis::scale_color_viridis(
+    name = "Location",
+    discrete = TRUE
+  )
+```
+
+## themes
+
+```{r}
+ggp_base +
+  theme(legend.position = "bottom")
+```
+
+```{r}
+ggp_base +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+```{r}
+ggp_base +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+```{r}
+ggp_base +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+where does warning message: removed 15 rows containing missing values come from?
+```{r}
+weather_df %>%
+  filter(is.na(tmin))
+```
+no tmin (x axis) values for 15 observations
+
+
+
+
