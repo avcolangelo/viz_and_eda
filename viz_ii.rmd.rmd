@@ -199,7 +199,7 @@ waikiki %>%
 ggp_scatter =
   weather_df %>%
   ggplot(aes(x = tmin, y = tmax)) +
-  geom_point()
+  geom_point() 
 
 ggp_scatter 
 
@@ -222,6 +222,71 @@ ggp_scatter + ggp_density
 (ggp_scatter + ggp_density) / ggp_box
 ```
 
+## Data manipulation
+```{r}
+weather_df %>%
+  ggplot(aes(x = name, y = tmax, color = name)) +
+  geom_boxplot()
+```
+
+changing order of factors
+```{r}
+weather_df %>%
+  mutate(
+    name = factor(name),
+    name = fct_relevel(name, "Waikiki_HA", "CentralPark_NY")
+  ) %>%
+  ggplot(aes(x = name, y = tmax, color = name)) +
+  geom_boxplot()
+```
+
+putting things in order according to a variable (tmax)
+```{r}
+weather_df %>%
+  mutate(
+    name = factor(name),
+    name = fct_reorder(name, tmax)
+  ) %>%
+  ggplot(aes(x = name, y = tmax, color = name)) +
+  geom_boxplot()
+```
+
+## restructure then plot
+
+```{r}
+weather_df %>%
+  pivot_longer(
+    tmax:tmin, 
+    names_to = "observation",
+    values_to = "temperature"
+  ) %>% 
+  ggplot(aes(x = temperature)) +
+  geom_density() 
+```
+
+```{r}
+weather_df %>%
+  pivot_longer(
+    tmax:tmin, 
+    names_to = "observation",
+    values_to = "temperature"
+  ) %>% 
+  ggplot(aes(x = temperature, fill = observation)) +
+  geom_density() 
+```
+
+```{r}
+weather_df %>%
+  pivot_longer(
+    tmax:tmin, 
+    names_to = "observation",
+    values_to = "temperature"
+  ) %>% 
+  ggplot(aes(x = temperature, fill = observation)) +
+  geom_density(alpha = .5) +
+  facet_grid(~name) +
+  theme(legend.position = "bottom")
+```
 
 
 

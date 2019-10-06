@@ -289,7 +289,7 @@ waikiki %>%
 ggp_scatter =
   weather_df %>%
   ggplot(aes(x = tmin, y = tmax)) +
-  geom_point()
+  geom_point() 
 
 ggp_scatter 
 ```
@@ -345,3 +345,96 @@ ggp_scatter + ggp_density
     ## Warning: Removed 3 rows containing non-finite values (stat_boxplot).
 
 ![](viz_ii.rmd_files/figure-gfm/unnamed-chunk-16-5.png)<!-- -->
+
+## Data manipulation
+
+``` r
+weather_df %>%
+  ggplot(aes(x = name, y = tmax, color = name)) +
+  geom_boxplot()
+```
+
+    ## Warning: Removed 3 rows containing non-finite values (stat_boxplot).
+
+![](viz_ii.rmd_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+
+changing order of factors
+
+``` r
+weather_df %>%
+  mutate(
+    name = factor(name),
+    name = fct_relevel(name, "Waikiki_HA", "CentralPark_NY")
+  ) %>%
+  ggplot(aes(x = name, y = tmax, color = name)) +
+  geom_boxplot()
+```
+
+    ## Warning: Removed 3 rows containing non-finite values (stat_boxplot).
+
+![](viz_ii.rmd_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+
+putting things in order according to a variable (tmax)
+
+``` r
+weather_df %>%
+  mutate(
+    name = factor(name),
+    name = fct_reorder(name, tmax)
+  ) %>%
+  ggplot(aes(x = name, y = tmax, color = name)) +
+  geom_boxplot()
+```
+
+    ## Warning: Removed 3 rows containing non-finite values (stat_boxplot).
+
+![](viz_ii.rmd_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+
+## restructure then plot
+
+``` r
+weather_df %>%
+  pivot_longer(
+    tmax:tmin, 
+    names_to = "observation",
+    values_to = "temperature"
+  ) %>% 
+  ggplot(aes(x = temperature)) +
+  geom_density() 
+```
+
+    ## Warning: Removed 18 rows containing non-finite values (stat_density).
+
+![](viz_ii.rmd_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+
+``` r
+weather_df %>%
+  pivot_longer(
+    tmax:tmin, 
+    names_to = "observation",
+    values_to = "temperature"
+  ) %>% 
+  ggplot(aes(x = temperature, fill = observation)) +
+  geom_density() 
+```
+
+    ## Warning: Removed 18 rows containing non-finite values (stat_density).
+
+![](viz_ii.rmd_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+
+``` r
+weather_df %>%
+  pivot_longer(
+    tmax:tmin, 
+    names_to = "observation",
+    values_to = "temperature"
+  ) %>% 
+  ggplot(aes(x = temperature, fill = observation)) +
+  geom_density(alpha = .5) +
+  facet_grid(~name) +
+  theme(legend.position = "bottom")
+```
+
+    ## Warning: Removed 18 rows containing non-finite values (stat_density).
+
+![](viz_ii.rmd_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
