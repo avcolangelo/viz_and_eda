@@ -206,6 +206,8 @@ ggp_base +
 where does warning message: removed 15 rows containing missing values
 come from?
 
+Because no tmin (x axis) values for 15 observations
+
 ``` r
 weather_df %>%
   filter(is.na(tmin))
@@ -230,4 +232,116 @@ weather_df %>%
     ## 14 Waikiki_HA USC00519397 2017-10-22     0  30      NA
     ## 15 Waikiki_HA USC00519397 2017-12-22     0  26.7    NA
 
-no tmin (x axis) values for 15 observations
+## more than one dataset
+
+``` r
+central_park =
+  weather_df %>%
+  filter(name == "CentralPark_NY")
+
+waikiki =
+  weather_df %>%
+  filter(name == "Waikiki_HA")
+
+ggplot(data = waikiki, aes(x = date, y = tmax, color = name)) + geom_point()
+```
+
+    ## Warning: Removed 3 rows containing missing values (geom_point).
+
+![](viz_ii.rmd_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
+``` r
+ggplot(data = waikiki, aes(x = date, y = tmax, color = name)) + 
+  geom_point() +
+  geom_line(data = central_park)
+```
+
+    ## Warning: Removed 3 rows containing missing values (geom_point).
+
+![](viz_ii.rmd_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+``` r
+ggplot(data = waikiki, aes(x = date, y = tmax, color = name)) + 
+  geom_point(aes(size = prcp)) +
+  geom_line(data = central_park)
+```
+
+    ## Warning: Removed 3 rows containing missing values (geom_point).
+
+![](viz_ii.rmd_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+(brief aside about colors): have to specify color inside the geom that
+corresponds to it
+
+``` r
+waikiki %>%
+  ggplot(aes(x = date, y = tmax)) +
+  geom_point(color = "blue")
+```
+
+    ## Warning: Removed 3 rows containing missing values (geom_point).
+
+![](viz_ii.rmd_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+## Multi-panel plots
+
+``` r
+ggp_scatter =
+  weather_df %>%
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point()
+
+ggp_scatter 
+```
+
+    ## Warning: Removed 15 rows containing missing values (geom_point).
+
+![](viz_ii.rmd_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+
+``` r
+ggp_density =
+  weather_df %>% 
+  ggplot(aes(x = tmin)) +
+  geom_density()
+
+ggp_density
+```
+
+    ## Warning: Removed 15 rows containing non-finite values (stat_density).
+
+![](viz_ii.rmd_files/figure-gfm/unnamed-chunk-16-2.png)<!-- -->
+
+``` r
+ggp_box =
+  weather_df %>%
+  ggplot(aes(x = name, y = tmax)) +
+  geom_boxplot()
+
+ggp_box
+```
+
+    ## Warning: Removed 3 rows containing non-finite values (stat_boxplot).
+
+![](viz_ii.rmd_files/figure-gfm/unnamed-chunk-16-3.png)<!-- -->
+
+``` r
+ggp_scatter + ggp_density
+```
+
+    ## Warning: Removed 15 rows containing missing values (geom_point).
+
+    ## Warning: Removed 15 rows containing non-finite values (stat_density).
+
+![](viz_ii.rmd_files/figure-gfm/unnamed-chunk-16-4.png)<!-- -->
+
+``` r
+(ggp_scatter + ggp_density) / ggp_box
+```
+
+    ## Warning: Removed 15 rows containing missing values (geom_point).
+    
+    ## Warning: Removed 15 rows containing non-finite values (stat_density).
+
+    ## Warning: Removed 3 rows containing non-finite values (stat_boxplot).
+
+![](viz_ii.rmd_files/figure-gfm/unnamed-chunk-16-5.png)<!-- -->

@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(ggridges)
+library(patchwork)
 ```
 
 ## Create the weather data
@@ -151,11 +152,75 @@ ggp_base +
 ```
 
 where does warning message: removed 15 rows containing missing values come from?
+
+Because no tmin (x axis) values for 15 observations
 ```{r}
 weather_df %>%
   filter(is.na(tmin))
 ```
-no tmin (x axis) values for 15 observations
+
+## more than one dataset
+
+```{r}
+central_park =
+  weather_df %>%
+  filter(name == "CentralPark_NY")
+
+waikiki =
+  weather_df %>%
+  filter(name == "Waikiki_HA")
+
+ggplot(data = waikiki, aes(x = date, y = tmax, color = name)) + geom_point()
+```
+
+```{r}
+ggplot(data = waikiki, aes(x = date, y = tmax, color = name)) + 
+  geom_point() +
+  geom_line(data = central_park)
+```
+
+```{r}
+ggplot(data = waikiki, aes(x = date, y = tmax, color = name)) + 
+  geom_point(aes(size = prcp)) +
+  geom_line(data = central_park)
+```
+
+(brief aside about colors): have to specify color inside the geom that corresponds to it
+
+```{r}
+waikiki %>%
+  ggplot(aes(x = date, y = tmax)) +
+  geom_point(color = "blue")
+```
+
+## Multi-panel plots
+
+```{r}
+ggp_scatter =
+  weather_df %>%
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point()
+
+ggp_scatter 
+
+ggp_density =
+  weather_df %>% 
+  ggplot(aes(x = tmin)) +
+  geom_density()
+
+ggp_density
+
+ggp_box =
+  weather_df %>%
+  ggplot(aes(x = name, y = tmax)) +
+  geom_boxplot()
+
+ggp_box
+
+ggp_scatter + ggp_density
+
+(ggp_scatter + ggp_density) / ggp_box
+```
 
 
 
