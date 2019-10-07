@@ -91,15 +91,100 @@ weather_df %>%
   count(name, month)
 ```
 
-```{r}
+Let's make a nice table
 
+```{r}
+weather_df %>%
+  count(name) %>%
+  knitr::kable()
+```
+
+## 2x2 tables
+
+```{r}
+weather_df %>%
+  filter(name != "Waikiki_HA") %>%
+  mutate(
+    cold = case_when(
+      tmax < 5 ~ "cold",
+      tmax >= 5 ~ "not cold",
+      TRUE      ~ ""
+    )
+  ) %>%
+  group_by(name, cold) %>%
+  count()
 ```
 
 
+```{r}
+weather_df %>%
+  filter(name != "Waikiki_HA") %>%
+  mutate(
+    cold = case_when(
+      tmax < 5 ~ "cold",
+      tmax >= 5 ~ "not cold",
+      TRUE      ~ ""
+    )
+  ) %>%
+  janitor::tabyl(name, cold)
+```
+
+## general summaries
+
+```{r}
+weather_df %>%
+  group_by(name) %>%
+  summarize(
+    n = n(),
+    mean_tmax = mean(tmax),
+    sd_tmax = sd(tmax),
+    median_prcp = median(prcp)
+  )
+```
+
+```{r}
+weather_df %>%
+  group_by(name) %>%
+  summarize(
+    n = n(),
+    mean_tmax = mean(tmax, na.rm = TRUE),
+    sd_tmax = sd(tmax, na.rm = TRUE),
+    median_prcp = median(prcp, na.rm = TRUE)
+  )
+```
 
 
+```{r}
+weather_df %>%
+  group_by(name, month) %>%
+  summarize(
+    n = n(),
+    mean_tmax = mean(tmax, na.rm = TRUE),
+    sd_tmax = sd(tmax, na.rm = TRUE),
+    median_prcp = median(prcp, na.rm = TRUE)
+  ) %>%
+  ggplot(aes(x = month, y = mean_tmax, color = name)) + geom_point() + geom_line()
+```
+
+```{r, eval = FALSE}
+## this is a check on missing values
+
+weather_df %>%
+  filter(is.na(tmax))
+```
 
 
-
-
+```{r}
+weather_df %>%
+  group_by(name, month) %>%
+  summarize(
+    mean_tmax = mean(tmax, na.rm = TRUE)
+  ) %>% 
+  pivot_wider(
+    names_from = name,
+    values_from = mean_tmax
+    ) %>%
+  knitr::kable(digits = 1)
+```
+```
 

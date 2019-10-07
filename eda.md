@@ -181,3 +181,147 @@ weather_df %>%
     ##  9 CentralPark_NY 2017-09-01    30
     ## 10 CentralPark_NY 2017-10-01    31
     ## # ... with 26 more rows
+
+Let’s make a nice table
+
+``` r
+weather_df %>%
+  count(name) %>%
+  knitr::kable()
+```
+
+| name            |   n |
+| :-------------- | --: |
+| CentralPark\_NY | 365 |
+| Waikiki\_HA     | 365 |
+| Waterhole\_WA   | 365 |
+
+## 2x2 tables
+
+``` r
+weather_df %>%
+  filter(name != "Waikiki_HA") %>%
+  mutate(
+    cold = case_when(
+      tmax < 5 ~ "cold",
+      tmax >= 5 ~ "not cold",
+      TRUE      ~ ""
+    )
+  ) %>%
+  group_by(name, cold) %>%
+  count()
+```
+
+    ## # A tibble: 4 x 3
+    ## # Groups:   name, cold [4]
+    ##   name           cold         n
+    ##   <chr>          <chr>    <int>
+    ## 1 CentralPark_NY cold        44
+    ## 2 CentralPark_NY not cold   321
+    ## 3 Waterhole_WA   cold       172
+    ## 4 Waterhole_WA   not cold   193
+
+``` r
+weather_df %>%
+  filter(name != "Waikiki_HA") %>%
+  mutate(
+    cold = case_when(
+      tmax < 5 ~ "cold",
+      tmax >= 5 ~ "not cold",
+      TRUE      ~ ""
+    )
+  ) %>%
+  janitor::tabyl(name, cold)
+```
+
+    ##            name cold not cold
+    ##  CentralPark_NY   44      321
+    ##    Waterhole_WA  172      193
+
+## general summaries
+
+``` r
+weather_df %>%
+  group_by(name) %>%
+  summarize(
+    n = n(),
+    mean_tmax = mean(tmax),
+    sd_tmax = sd(tmax),
+    median_prcp = median(prcp)
+  )
+```
+
+    ## # A tibble: 3 x 5
+    ##   name               n mean_tmax sd_tmax median_prcp
+    ##   <chr>          <int>     <dbl>   <dbl>       <dbl>
+    ## 1 CentralPark_NY   365     17.4     9.86           0
+    ## 2 Waikiki_HA       365     NA     NaN             NA
+    ## 3 Waterhole_WA     365      7.48    7.96           0
+
+``` r
+weather_df %>%
+  group_by(name) %>%
+  summarize(
+    n = n(),
+    mean_tmax = mean(tmax, na.rm = TRUE),
+    sd_tmax = sd(tmax, na.rm = TRUE),
+    median_prcp = median(prcp, na.rm = TRUE)
+  )
+```
+
+    ## # A tibble: 3 x 5
+    ##   name               n mean_tmax sd_tmax median_prcp
+    ##   <chr>          <int>     <dbl>   <dbl>       <dbl>
+    ## 1 CentralPark_NY   365     17.4     9.86           0
+    ## 2 Waikiki_HA       365     29.7     2.15           0
+    ## 3 Waterhole_WA     365      7.48    7.96           0
+
+``` r
+weather_df %>%
+  group_by(name, month) %>%
+  summarize(
+    n = n(),
+    mean_tmax = mean(tmax, na.rm = TRUE),
+    sd_tmax = sd(tmax, na.rm = TRUE),
+    median_prcp = median(prcp, na.rm = TRUE)
+  ) %>%
+  ggplot(aes(x = month, y = mean_tmax, color = name)) + geom_point() + geom_line()
+```
+
+<img src="eda_files/figure-gfm/unnamed-chunk-13-1.png" width="90%" />
+
+``` r
+## this is a check on missing values
+
+weather_df %>%
+  filter(is.na(tmax))
+```
+
+``` r
+weather_df %>%
+  group_by(name, month) %>%
+  summarize(
+    mean_tmax = mean(tmax, na.rm = TRUE)
+  ) %>% 
+  pivot_wider(
+    names_from = name,
+    values_from = mean_tmax
+    ) %>%
+  knitr::kable(digits = 1)
+```
+
+| month      | CentralPark\_NY | Waikiki\_HA | Waterhole\_WA |
+| :--------- | --------------: | ----------: | ------------: |
+| 2017-01-01 |             6.0 |        27.8 |         \-1.4 |
+| 2017-02-01 |             9.3 |        27.2 |           0.0 |
+| 2017-03-01 |             8.2 |        29.1 |           1.7 |
+| 2017-04-01 |            18.3 |        29.7 |           3.9 |
+| 2017-05-01 |            20.1 |        30.1 |          10.1 |
+| 2017-06-01 |            26.3 |        31.3 |          12.9 |
+| 2017-07-01 |            28.7 |        31.8 |          16.3 |
+| 2017-08-01 |            27.2 |        32.0 |          19.6 |
+| 2017-09-01 |            25.4 |        31.7 |          14.2 |
+| 2017-10-01 |            21.8 |        30.3 |           8.3 |
+| 2017-11-01 |            12.3 |        28.4 |           1.4 |
+| 2017-12-01 |             4.5 |        26.5 |           2.2 |
+| \`\`\`     |                 |             |               |
