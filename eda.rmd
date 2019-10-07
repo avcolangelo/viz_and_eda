@@ -186,5 +186,75 @@ weather_df %>%
     ) %>%
   knitr::kable(digits = 1)
 ```
+
+## grouped mutates
+
+don't forget you can ungroup
+```{r}
+weather_df %>%
+  group_by(name) %>%
+  ungroup()
 ```
+
+mutating in a group specific fashion
+```{r}
+weather_df %>%
+  group_by(name) %>%
+  mutate(
+    mean_tmax = mean(tmax, na.rm = TRUE)
+  ) %>% view
+```
+
+```{r}
+weather_df %>%
+  group_by(name) %>%
+  mutate(
+    mean_tmax = mean(tmax, na.rm = TRUE), 
+    centered_tmax = tmax - mean_tmax
+  ) %>% 
+  ggplot(aes(x = date, y = centered_tmax, color = name)) + geom_point()
+```
+
+window functions in grouped mutates
+
+```{r}
+weather_df %>%
+  group_by(name, month) %>%
+  mutate(
+    tmax_rank = min_rank(tmax)
+  )
+```
+
+```{r}
+weather_df %>%
+  group_by(name, month) %>%
+  mutate(
+    tmax_rank = min_rank(tmax)
+  ) %>%
+  filter(tmax_rank == 1)
+```
+
+lags and leads
+
+```{r}
+weather_df %>%
+  group_by(name) %>%
+  mutate(
+    lagged_tmax = lag(tmax),
+    one_day_tmax_change = tmax - lagged_tmax
+  ) %>% view
+```
+
+```{r}
+weather_df %>%
+  group_by(name) %>%
+  mutate(
+    lagged_tmax = lag(tmax),
+    one_day_tmax_change = tmax - lagged_tmax
+  ) %>% 
+  summarize(sd_daily_change = sd(one_day_tmax_change, na.rm = TRUE))
+```
+
+
+
 
